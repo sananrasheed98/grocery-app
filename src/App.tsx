@@ -1,11 +1,13 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { cx, fmtMoney } from "./lib/core";
+import { downloadProjectZip } from "./lib/downloadZip";
 import { AppProvider, cartSubtotal, cartUnits, useStore } from "./lib/store";
 import { ToastProvider } from "./components/ui";
 import { EanBarcode } from "./components/ProductArt";
 import {
   IBasket,
   IClock,
+  IDownload,
   IGear,
   IListChecks,
   IReceipt,
@@ -166,6 +168,8 @@ function Shell() {
           ))}
         </div>
 
+        <RailDownload />
+
         <p className="mt-6 text-[11px] text-[#5c6e5e]">
           <kbd className="rounded-md border border-white/15 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-[#93a596]">S</kbd>{" "}
           open scanner ·{" "}
@@ -205,6 +209,29 @@ function Shell() {
 }
 
 /* ============================== bits ============================== */
+
+function RailDownload() {
+  const [state, setState] = useState<"idle" | "busy" | "done">("idle");
+  return (
+    <button
+      disabled={state === "busy"}
+      onClick={async () => {
+        setState("busy");
+        try {
+          await downloadProjectZip();
+          setState("done");
+          window.setTimeout(() => setState("idle"), 4000);
+        } catch {
+          setState("idle");
+        }
+      }}
+      className="press mt-6 flex items-center justify-center gap-2.5 rounded-full border border-[#45c482]/30 bg-[#45c482]/10 py-3 text-[13px] font-bold text-[#8fe6ba] transition-colors hover:bg-[#45c482]/20"
+    >
+      <IDownload size={16} className={cx(state === "busy" && "animate-bounce")} />
+      {state === "busy" ? "Zipping project…" : state === "done" ? "Saved — check Downloads" : "Download app files (.zip)"}
+    </button>
+  );
+}
 
 function RailStat({ label, value, icon }: { label: string; value: string; icon: ReactNode }) {
   return (

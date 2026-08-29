@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import type { CurrencyCode } from "../lib/core";
-import { CURRENCY_SYMBOL, parseMoney } from "../lib/core";
+import { CURRENCY_SYMBOL, cx, parseMoney } from "../lib/core";
+import { downloadProjectZip } from "../lib/downloadZip";
 import { useStore } from "../lib/store";
 import {
   ICamera,
@@ -35,6 +36,7 @@ export function SettingsTab() {
   const { push } = useToast();
   const [budgetRaw, setBudgetRaw] = useState(m2s(s.budget));
   const [clearOpen, setClearOpen] = useState(false);
+  const [zipping, setZipping] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const commitBudget = (raw: string) => {
@@ -184,6 +186,40 @@ export function SettingsTab() {
               <input ref={fileRef} type="file" accept="application/json,.json" className="hidden"
                 onChange={(e) => onImportFile(e.target.files?.[0])} />
             </div>
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-[16px] border border-brand/25 bg-brand-soft">
+          <div className="p-4">
+            <div className="flex items-center gap-2">
+              <IDownload size={16} className="text-brand" />
+              <p className="font-display text-[14px] font-bold text-brand-deep dark:text-brand">Take the source with you</p>
+            </div>
+            <p className="mt-1.5 text-[12px] leading-relaxed text-brand-deep/85 dark:text-brand/80">
+              Download the full project as a ZIP — Capacitor config, README with the exact{" "}
+              <span className="font-mono text-[11px]">gradlew.bat assembleDebug</span> steps, everything needed to
+              compile the Android APK on your PC.
+            </p>
+          </div>
+          <div className="px-4 pb-4">
+            <button
+              disabled={zipping}
+              onClick={async () => {
+                setZipping(true);
+                try {
+                  const { name, count } = await downloadProjectZip();
+                  push(`${name} saved — ${count} files zipped`);
+                } catch {
+                  push("Couldn’t build the ZIP — try again", "err");
+                } finally {
+                  setZipping(false);
+                }
+              }}
+              className="press flex w-full items-center justify-center gap-2 rounded-full bg-brand py-3 text-[13.5px] font-bold text-white shadow-lg shadow-brand/25 disabled:opacity-70"
+            >
+              <IDownload size={16} className={cx(zipping && "animate-bounce")} />
+              {zipping ? "Zipping project…" : "Download project files (.zip)"}
+            </button>
           </div>
         </div>
 
