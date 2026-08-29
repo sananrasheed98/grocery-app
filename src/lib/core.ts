@@ -12,7 +12,7 @@ export type Category =
   | "Beverages"
   | "Personal Care";
 
-export type CurrencyCode = "INR" | "USD" | "EUR" | "GBP";
+export type CurrencyCode = "INR" | "PKR" | "USD" | "EUR" | "GBP";
 
 export interface Product {
   id: string;
@@ -114,6 +114,7 @@ export const uid = (): string =>
 
 const LOCALE: Record<CurrencyCode, string> = {
   INR: "en-IN",
+  PKR: "en-PK",
   USD: "en-US",
   EUR: "de-DE",
   GBP: "en-GB",
@@ -131,6 +132,7 @@ export function fmtMoney(minor: number, cur: CurrencyCode): string {
 
 export const CURRENCY_SYMBOL: Record<CurrencyCode, string> = {
   INR: "₹",
+  PKR: "Rs",
   USD: "$",
   EUR: "€",
   GBP: "£",

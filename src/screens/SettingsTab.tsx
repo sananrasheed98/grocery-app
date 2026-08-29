@@ -86,6 +86,7 @@ export function SettingsTab() {
                 onChange={(c) => { store.setSettings({ currency: c }); push(`Currency set to ${CURRENCY_SYMBOL[c]}`); }}
                 options={[
                   { v: "INR", label: "₹ INR" },
+                  { v: "PKR", label: "Rs PKR" },
                   { v: "USD", label: "$ USD" },
                   { v: "EUR", label: "€ EUR" },
                   { v: "GBP", label: "£ GBP" },
