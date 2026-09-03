@@ -1,0 +1,32 @@
+{
+  "name": "Kirana Cart — Grocery Scanner & Expense Tracker",
+  "short_name": "Kirana Cart",
+  "description": "Scan groceries, track the running total, budgets and price history — offline first.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0C120E",
+  "theme_color": "#0C120E",
+  "categories": ["shopping", "finance", "lifestyle"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "https://image.qwenlm.ai/generated-images/8d2864ca-f028-4cbe-99ac-4f2ba473ae2a/_result.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://image.qwenlm.ai/generated-images/8d2864ca-f028-4cbe-99ac-4f2ba473ae2a/_result.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

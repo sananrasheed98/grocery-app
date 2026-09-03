@@ -1,0 +1,10 @@
+{
+  "appId": "com.kirana.cart",
+  "appName": "Kirana Cart",
+  "webDir": "dist",
+  "backgroundColor": "#0b110d",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0b110d"
+  }
+}
