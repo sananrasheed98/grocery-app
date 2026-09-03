@@ -8,6 +8,7 @@ import { ProductCard } from "./AddFlow";
 import {
   IBasket,
   IBell,
+  ICamera,
   IChevR,
   IListChecks,
   IMoon,
@@ -28,12 +29,14 @@ const m2s = (m: number) =>
 export function ShopTab({
   onScan,
   onCheckout,
+  onVerify,
   onProduct,
   onGoLists,
   onGoHistory,
 }: {
   onScan: () => void;
   onCheckout: () => void;
+  onVerify: () => void;
   onProduct: (code: string) => void;
   onGoLists: () => void;
   onGoHistory: () => void;
@@ -167,6 +170,12 @@ export function ShopTab({
               <IListChecks size={15} className="text-brand" />
               {remainingChecks > 0 ? `${remainingChecks} list item${remainingChecks === 1 ? "" : "s"} to buy` : "Checklist complete"}
             </button>
+            {state.cart.length > 0 && (
+              <button onClick={onVerify} className="press flex flex-none items-center gap-2 rounded-full border border-amber/30 bg-amber-soft px-3.5 py-2 text-[12px] font-bold text-amber">
+                <ICamera size={14} />
+                Verify bill
+              </button>
+            )}
             {state.reminders[0] && (
               <button onClick={onGoLists} className="press flex flex-none items-center gap-2 rounded-full border border-line bg-raise px-3.5 py-2 text-[12px] font-semibold text-soft">
                 <IBell size={14} className="text-amber" />

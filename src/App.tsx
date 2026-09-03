@@ -22,12 +22,16 @@ import { Checkout } from "./screens/Checkout";
 import { HistoryTab, TripDetail } from "./screens/HistoryTab";
 import { ListsTab } from "./screens/ListsTab";
 import { SettingsTab } from "./screens/SettingsTab";
+import { BillCamera, BillCompare } from "./screens/BillCheck";
+import type { BillResult } from "./lib/billcheck";
 
 type Tab = "shop" | "lists" | "history" | "settings";
 type Screen =
   | { t: "add"; code: string; k: number }
   | { t: "checkout" }
-  | { t: "trip"; id: string };
+  | { t: "trip"; id: string }
+  | { t: "billcam" }
+  | { t: "compare"; res: BillResult; k: number };
 
 export default function App() {
   return (
@@ -88,7 +92,28 @@ function Shell() {
         />
       );
     else if (top.t === "checkout")
-      content = <Checkout onBack={pop} onGoHistory={() => { setStack([]); setTab("history"); }} />;
+      content = (
+        <Checkout
+          onBack={pop}
+          onGoHistory={() => { setStack([]); setTab("history"); }}
+          onVerify={() => push({ t: "billcam" })}
+        />
+      );
+    else if (top.t === "billcam")
+      content = (
+        <BillCamera
+          onClose={pop}
+          onDone={(res) => setStack([{ t: "compare", res, k: Date.now() }])}
+        />
+      );
+    else if (top.t === "compare")
+      content = (
+        <BillCompare
+          result={top.res}
+          onRetake={() => setStack([{ t: "billcam" }])}
+          onDone={() => setStack([])}
+        />
+      );
     else {
       const trip = state.trips.find((t) => t.id === top.id);
       content = trip ? (
@@ -103,6 +128,7 @@ function Shell() {
         <ShopTab
           onScan={openScanner}
           onCheckout={() => push({ t: "checkout" })}
+          onVerify={() => push({ t: "billcam" })}
           onProduct={(code) => push({ t: "add", code, k: Date.now() })}
           onGoLists={() => setTab("lists")}
           onGoHistory={() => setTab("history")}
@@ -116,8 +142,19 @@ function Shell() {
       );
   }
 
-  const showTotal = !scannerOpen && top?.t !== "checkout";
-  const mainKey = scannerOpen ? "scan" : top ? (top.t === "add" ? `add${top.k}` : top.t === "trip" ? `trip${top.id}` : "checkout") : tab;
+  const isCamera = scannerOpen || top?.t === "billcam";
+  const showTotal = !isCamera && top?.t !== "checkout" && top?.t !== "compare";
+  const mainKey = scannerOpen
+    ? "scan"
+    : top
+      ? top.t === "add"
+        ? `add${top.k}`
+        : top.t === "trip"
+          ? `trip${top.id}`
+          : top.t === "compare"
+            ? `compare${top.k}`
+            : top.t
+      : tab;
 
   return (
     <div className="relative flex min-h-dvh items-center justify-center overflow-hidden sm:gap-14 sm:px-8 lg:gap-20">
