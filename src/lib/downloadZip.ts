@@ -13,6 +13,9 @@ const sourceFiles = import.meta.glob(
     "/tsconfig.json",
     "/vite.config.js",
     "/capacitor.config.json",
+    "/build-apk.bat",
+    "/build-apk.sh",
+    "/.github/workflows/android.yml",
   ],
   { query: "?raw", import: "default" },
 ) as Record<string, () => Promise<string>>;
@@ -38,29 +41,45 @@ history, checklists and on-device trip history. PKR / INR / USD / EUR / GBP.
 
 ## Compile the Android APK
 
-Prerequisites: Android Studio (bundles the SDK + JDK 17), then once:
+### Route A - one click (needs Android Studio installed once)
 
-    setx ANDROID_HOME "%LOCALAPPDATA%\\Android\\Sdk"
-    setx JAVA_HOME "C:\\Program Files\\Android\\Android Studio\\jbr"
+1. Install Android Studio from https://developer.android.com/studio
+   (it bundles the JDK + Android SDK). Open it once and let the
+   first-run setup finish downloading the SDK.
+2. Double-click  **build-apk.bat**  (Windows) or run  **./build-apk.sh**
+   (macOS / Linux) in this folder.
 
-Restart the terminal, then in this folder:
+The script finds Java and the SDK, accepts licenses, builds everything
+and opens the folder containing your APK:
+
+    android\\app\\build\\outputs\\apk\\debug\\app-debug.apk
+
+### Route B - build in the cloud with GitHub (no Android Studio needed)
+
+1. Create a free account on https://github.com and click **New repository**
+   (any name, keep it Private, create it).
+2. Open the repo, click **uploading an existing file**, drag the
+   *contents* of this unzipped folder into the box, and commit.
+3. Go to the **Actions** tab -> **Build Android APK** -> **Run workflow**.
+4. When it finishes (a few minutes), open the run and download the
+   **kirana-cart-debug.apk** artifact. That file is your app.
+
+### Manual commands (if you prefer the terminal)
 
     npm install
     npm run build
     npx cap add android
     npx cap sync
     cd android
-    gradlew.bat assembleDebug
-
-Your APK:
-
-    android\\app\\build\\outputs\\apk\\debug\\app-debug.apk
-
-Install it with:  adb install app\\build\\outputs\\apk\\debug\\app-debug.apk
+    gradlew.bat assembleDebug        (Windows)
+    ./gradlew assembleDebug          (macOS / Linux)
 
 If Gradle can't find Java:
 
     gradlew.bat assembleDebug -Dorg.gradle.java.home="C:\\Program Files\\Android\\Android Studio\\jbr"
+
+Install the APK on your phone by copying the file over and opening it
+(allow "Install unknown apps"), or:  adb install app-debug.apk
 
 ## Notes
 

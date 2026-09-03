@@ -196,10 +196,12 @@ export function SettingsTab() {
               <p className="font-display text-[14px] font-bold text-brand-deep dark:text-brand">Take the source with you</p>
             </div>
             <p className="mt-1.5 text-[12px] leading-relaxed text-brand-deep/85 dark:text-brand/80">
-              Download the full project as a ZIP — Capacitor config, README with the exact{" "}
-              <span className="font-mono text-[11px]">gradlew.bat assembleDebug</span> steps, everything needed to
-              compile the Android APK on your PC.
+              Full project ZIP with two routes to the APK:
             </p>
+            <ul className="mt-1.5 space-y-1 text-[11.5px] leading-relaxed text-brand-deep/85 dark:text-brand/80">
+              <li><strong>One click</strong> — install Android Studio once, then double-click <span className="font-mono text-[10.5px]">build-apk.bat</span>. It does the rest and opens the APK folder.</li>
+              <li><strong>No Android Studio</strong> — upload the unzipped folder to a GitHub repo; the included Actions workflow compiles the APK in the cloud.</li>
+            </ul>
           </div>
           <div className="px-4 pb-4">
             <button
