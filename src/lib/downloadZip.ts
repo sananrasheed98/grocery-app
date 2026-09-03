@@ -10,11 +10,13 @@ const sourceFiles = import.meta.glob(
     "/public/**/*.{webmanifest,js,svg,txt}",
     "/index.html",
     "/package.json",
+    "/package-lock.json",
     "/tsconfig.json",
     "/vite.config.js",
     "/capacitor.config.json",
     "/build-apk.bat",
     "/build-apk.sh",
+    "/README.md",
     "/.github/workflows/android.yml",
   ],
   { query: "?raw", import: "default" },
@@ -27,6 +29,25 @@ android
 *.log
 .DS_Store
 local.properties
+`;
+
+const UPLOAD_MD = `# Upload to GitHub & get your APK (no Android Studio needed)
+
+1. Go to https://github.com and sign in (free).
+2. Click  +  ->  New repository.  Name it e.g. "kirana-cart".
+   Keep it PRIVATE.  Do NOT tick "Add a README".  Click  Create repository.
+3. On the new repo page click  "uploading an existing file".
+4. Drag the CONTENTS of this unzipped folder into the box
+   (select all files inside the folder, not the folder itself).
+5. Press  Commit changes.
+6. Open the  Actions  tab ->  "Build Android APK"  ->  Run workflow.
+7. After a few minutes the run finishes. Open it and download the
+   artifact  kirana-cart-debug-apk.  That contains your app-debug.apk.
+8. Copy the .apk to your phone and open it to install
+   (allow "Install unknown apps" when asked).
+
+The workflow file that does the compiling lives at
+.github/workflows/android.yml in this folder.
 `;
 
 const README = `# Kirana Cart — Grocery Scanner & Expense Tracker
@@ -117,7 +138,8 @@ export async function downloadProjectZip(): Promise<{ name: string; count: numbe
 
   root.file("README.md", README);
   root.file(".gitignore", GITIGNORE);
-  count += 2;
+  root.file("UPLOAD-TO-GITHUB.md", UPLOAD_MD);
+  count += 3;
 
   const blob = await zip.generateAsync({
     type: "blob",

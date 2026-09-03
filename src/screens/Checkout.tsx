@@ -2,12 +2,20 @@ import { useState } from "react";
 import confetti from "canvas-confetti";
 import { fmtMoney, parseMoney } from "../lib/core";
 import { cartSubtotal, cartUnits, useStore } from "../lib/store";
-import { IAlert, IBack, ICheck, IClock } from "../components/Icons";
+import { IAlert, IBack, ICamera, ICheck, IClock } from "../components/Icons";
 import { MoneyInput, useToast } from "../components/ui";
 
 const m2s = (m: number) => (m === 0 ? "" : (m / 100).toFixed(2).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1"));
 
-export function Checkout({ onBack, onGoHistory }: { onBack: () => void; onGoHistory: () => void }) {
+export function Checkout({
+  onBack,
+  onGoHistory,
+  onVerify,
+}: {
+  onBack: () => void;
+  onGoHistory: () => void;
+  onVerify: () => void;
+}) {
   const store = useStore();
   const { state } = store;
   const { push } = useToast();
@@ -160,6 +168,13 @@ export function Checkout({ onBack, onGoHistory }: { onBack: () => void; onGoHist
 
         <button onClick={finish} className="press w-full rounded-full bg-brand py-4 text-[15px] font-bold text-white shadow-lg shadow-brand/25">
           Finish Shopping
+        </button>
+        <button
+          onClick={onVerify}
+          className="press flex w-full items-center justify-center gap-2 rounded-full border border-line bg-raise py-3 text-[13px] font-semibold text-soft"
+        >
+          <ICamera size={16} className="text-brand" />
+          Scan the printed bill &amp; compare with my list
         </button>
         <p className="pb-1 text-center text-[11px] text-faint">
           The trip is saved to on-device history — it works fully offline.

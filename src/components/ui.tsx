@@ -263,6 +263,63 @@ export function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boo
   );
 }
 
+/* ---------------- github guide (fixed overlay — works from anywhere) ---- */
+
+export function GitHubGuideModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const [copied, setCopied] = useState(false);
+  if (!open) return null;
+  const steps = [
+    "Go to github.com and sign in (free account).",
+    "Click + → New repository. Any name works, e.g. kirana-cart. Keep it Private. Do NOT add a README. Click Create.",
+    "Unzip the kirana-cart-source.zip you just downloaded.",
+    "On the new repo page click “uploading an existing file”, drag the unzipped folder’s CONTENTS in, and press Commit changes.",
+    "Open the Actions tab → Build Android APK → Run workflow → Run workflow.",
+    "After a few minutes, open the finished run and download the kirana-cart-debug-apk artifact. That .apk is your app.",
+  ];
+  const copyAll = () => {
+    try {
+      navigator.clipboard?.writeText(
+        "Upload the unzipped kirana-cart-source folder to a new GitHub repo, then: Actions → Build Android APK → Run workflow → download the kirana-cart-debug-apk artifact.",
+      );
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard unavailable */
+    }
+  };
+  return (
+    <div className="fixed inset-0 z-[90] flex items-center justify-center p-5">
+      <button aria-label="Close" onClick={onClose} className="anim-fade absolute inset-0 w-full bg-black/60" />
+      <div className="anim-pop relative w-full max-w-[420px] overflow-hidden rounded-[20px] border border-line bg-raise shadow-2xl">
+        <div className="bg-brand px-5 py-4 text-white">
+          <p className="font-display text-[17px] font-extrabold">Get your APK via GitHub</p>
+          <p className="mt-0.5 text-[12px] text-white/75">
+            GitHub’s servers compile it for you — no Android Studio needed.
+          </p>
+        </div>
+        <ol className="max-h-[46vh] space-y-2.5 overflow-y-auto px-5 py-4 scroll-thin">
+          {steps.map((s, i) => (
+            <li key={i} className="flex gap-3 text-[13px] leading-relaxed text-soft">
+              <span className="mt-0.5 flex h-6 w-6 flex-none items-center justify-center rounded-full bg-brand-soft font-mono text-[11.5px] font-bold text-brand">
+                {i + 1}
+              </span>
+              {s}
+            </li>
+          ))}
+        </ol>
+        <div className="flex gap-2.5 border-t border-line px-5 py-4">
+          <button onClick={copyAll} className="press flex-1 rounded-full border border-line bg-surface py-2.5 text-[13px] font-semibold text-soft">
+            {copied ? "Copied!" : "Copy summary"}
+          </button>
+          <button onClick={onClose} className="press flex-1 rounded-full bg-brand py-2.5 text-[13px] font-bold text-white">
+            Got it
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ---------------- tiny chart ---------------- */
 
 export function Sparkline({ points, color }: { points: number[]; color: string }) {

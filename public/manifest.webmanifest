@@ -11,6 +11,12 @@
   "categories": ["shopping", "finance", "lifestyle"],
   "icons": [
     {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
       "src": "https://image.qwenlm.ai/generated-images/8d2864ca-f028-4cbe-99ac-4f2ba473ae2a/_result.png",
       "sizes": "512x512",
       "type": "image/png",

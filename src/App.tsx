@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { cx, fmtMoney } from "./lib/core";
 import { downloadProjectZip } from "./lib/downloadZip";
 import { AppProvider, cartSubtotal, cartUnits, useStore } from "./lib/store";
-import { ToastProvider } from "./components/ui";
+import { GitHubGuideModal, ToastProvider } from "./components/ui";
 import { EanBarcode } from "./components/ProductArt";
 import {
   IBasket,
@@ -249,24 +249,32 @@ function Shell() {
 
 function RailDownload() {
   const [state, setState] = useState<"idle" | "busy" | "done">("idle");
+  const [guide, setGuide] = useState(false);
   return (
-    <button
-      disabled={state === "busy"}
-      onClick={async () => {
-        setState("busy");
-        try {
-          await downloadProjectZip();
-          setState("done");
-          window.setTimeout(() => setState("idle"), 4000);
-        } catch {
-          setState("idle");
-        }
-      }}
-      className="press mt-6 flex items-center justify-center gap-2.5 rounded-full border border-[#45c482]/30 bg-[#45c482]/10 py-3 text-[13px] font-bold text-[#8fe6ba] transition-colors hover:bg-[#45c482]/20"
-    >
-      <IDownload size={16} className={cx(state === "busy" && "animate-bounce")} />
-      {state === "busy" ? "Zipping project…" : state === "done" ? "Saved — check Downloads" : "Download app files (.zip)"}
-    </button>
+    <>
+      <button
+        disabled={state === "busy"}
+        onClick={async () => {
+          setState("busy");
+          try {
+            await downloadProjectZip();
+            setState("done");
+            setGuide(true);
+            window.setTimeout(() => setState("idle"), 4000);
+          } catch {
+            setState("idle");
+          }
+        }}
+        className="press mt-6 flex items-center justify-center gap-2.5 rounded-full border border-[#45c482]/30 bg-[#45c482]/10 py-3 text-[13px] font-bold text-[#8fe6ba] transition-colors hover:bg-[#45c482]/20"
+      >
+        <IDownload size={16} className={cx(state === "busy" && "animate-bounce")} />
+        {state === "busy" ? "Zipping project…" : state === "done" ? "Saved — check Downloads" : "Download app files (.zip)"}
+      </button>
+      <p className="mt-2 text-center text-[10.5px] leading-relaxed text-[#5c6e5e]">
+        GitHub-ready — upload it to a repo and the built-in Actions workflow compiles the APK for you.
+      </p>
+      <GitHubGuideModal open={guide} onClose={() => setGuide(false)} />
+    </>
   );
 }
 

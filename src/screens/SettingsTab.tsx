@@ -15,7 +15,7 @@ import {
   IVibrate,
   IWifiOff,
 } from "../components/Icons";
-import { Modal, MoneyInput, Seg, SectionLabel, Stepper, Toggle, useToast } from "../components/ui";
+import { GitHubGuideModal, Modal, MoneyInput, Seg, SectionLabel, Stepper, Toggle, useToast } from "../components/ui";
 
 const m2s = (m: number) => (m === 0 ? "" : (m / 100).toFixed(2).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1"));
 
@@ -37,6 +37,7 @@ export function SettingsTab() {
   const [budgetRaw, setBudgetRaw] = useState(m2s(s.budget));
   const [clearOpen, setClearOpen] = useState(false);
   const [zipping, setZipping] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const commitBudget = (raw: string) => {
@@ -203,7 +204,7 @@ export function SettingsTab() {
               <li><strong>No Android Studio</strong> — upload the unzipped folder to a GitHub repo; the included Actions workflow compiles the APK in the cloud.</li>
             </ul>
           </div>
-          <div className="px-4 pb-4">
+          <div className="space-y-2 px-4 pb-4">
             <button
               disabled={zipping}
               onClick={async () => {
@@ -211,6 +212,7 @@ export function SettingsTab() {
                 try {
                   const { name, count } = await downloadProjectZip();
                   push(`${name} saved — ${count} files zipped`);
+                  setGuideOpen(true);
                 } catch {
                   push("Couldn’t build the ZIP — try again", "err");
                 } finally {
@@ -220,9 +222,13 @@ export function SettingsTab() {
               className="press flex w-full items-center justify-center gap-2 rounded-full bg-brand py-3 text-[13.5px] font-bold text-white shadow-lg shadow-brand/25 disabled:opacity-70"
             >
               <IDownload size={16} className={cx(zipping && "animate-bounce")} />
-              {zipping ? "Zipping project…" : "Download project files (.zip)"}
+              {zipping ? "Zipping project…" : "Download GitHub-ready project (.zip)"}
+            </button>
+            <button onClick={() => setGuideOpen(true)} className="press w-full rounded-full border border-line bg-raise py-2 text-[11.5px] font-semibold text-soft">
+              How do I turn this into an APK?
             </button>
           </div>
+          <GitHubGuideModal open={guideOpen} onClose={() => setGuideOpen(false)} />
         </div>
 
         <div className="rounded-[16px] border border-line bg-raise p-4">
